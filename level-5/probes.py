@@ -40,12 +40,13 @@ def getnum(prompt: str) -> int:
             print("enter a valid number!")
 
 def scan_planet(index: int) -> str:
-    climate = index % 4
+    climate = index % 4 # mod used instead of random so that planets behave the
+                        # same betweeen runs
     reports = probe_reports[climate]
     probe_report = choice(reports)
     return probe_report
 
-def scan_for_planets() -> None:
+def scan_for_planets() -> list[int]:
     planets = []
     for i in range(randint(2, 10)):
         planets.append(randint(0, 9999))
@@ -54,13 +55,13 @@ def scan_for_planets() -> None:
 def main():
     print("Scanning...  ", end="")
     loading_chars = list("⣾⣽⣻⢿⡿⣟⣯⣷")
-    for i in range(20):
+    for i in range(randint(10, 30)):
         sys.stdout.write("\b" + loading_chars[i%len(loading_chars)])
         sys.stdout.flush()
         sleep(0.1)
     print("\n")
     planets = scan_for_planets()
-    print(f"Found {len(planets)} planets:")
+    print(f"Identified {len(planets)} planets within scanner range:")
     for p in planets:
         print(f"Planet {p}")
     
