@@ -1,20 +1,52 @@
-def add_multiple(number: float, i: int, multiples):
-    multiple = number * i
-    if multiples.get(multiple):
-        multiples[multiple].add(number)
-    else:
-        multiples[multiple] = {number}
-
-def lcm(*numbers: float) -> float:
-    multiples = {}
-
-    i = 1
+def getnum(prompt: str) -> int|None:
     while True:
-        for n in numbers:
-            add_multiple(n, i, multiples)
-            i += 1
+        num = input(prompt).strip()
+        try:
+            return int(num)
+        except ValueError:
+            if num == "":
+                return None
+            else:
+                print("enter a valid number!")
 
-            for k, v in multiples.items():
-                if len(v) == len(numbers): return k
+def gcd_pair(a: int, b: int) -> int|None:
+    if a == b == 0:
+        return None
+    elif a == 0:
+        return abs(b)
+    elif b == 0:
+        return abs(a)
+        
+    remainder = a % b
+    a = b
+    b = remainder
+    
+    if remainder == 0:
+        return a
+    else:
+        return gcd_pair(a, b)
 
-print(lcm(5, 10))
+def lcm(*numbers: int) -> int|None:
+    if len(numbers) == 0: return None
+    
+    running_lcm = numbers[0]
+    
+    for n in numbers[1:]:
+        running_lcm = abs(running_lcm * n) // gcd_pair(running_lcm, n)
+        if running_lcm is None: return None
+
+    return running_lcm
+
+def main():
+    numbers = []
+    
+    while True:
+        num = getnum("enter a number to lcm: ")
+        if num is not None:
+            numbers.append(num)
+        else:
+            break
+    print(f"lcm of {", ".join([str(n) for n in numbers])} = {lcm(*numbers)}")
+    
+if __name__ == "__main__":
+    main()

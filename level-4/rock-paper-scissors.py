@@ -36,8 +36,13 @@ def main():
         sleep(1)
 
         outcome = "beats" if BEATS[player] == computer else "loses to"
-        print(f"{LONG[player]} {outcome} {LONG[computer]},")
-        if BEATS[player] == computer:
+        if player != computer:
+            print(f"{LONG[player]} {outcome} {LONG[computer]},")
+            
+        if player == computer:
+            print("you draw, try again!")
+            main()
+        elif BEATS[player] == computer:
             print("you win!")
         else:
             print("you lose!")

@@ -1,21 +1,24 @@
-charmap = list("0123456789ABCDEF")
+charmap = list("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/")
 
 def getnum(prompt: str) -> int:
     while True:
         num = input(prompt).strip()
         try:
-            return int(num)
+            if num > 64:
+                print("only up to base64 (non-standard is supported).")
+            else:
+                return int(num)
         except ValueError:
             print("enter a valid number!")
 
 
 def to_base(decimal: int, base: int) -> str:
-    binary = ""
+    result = ""
     while decimal > 0:
         remainder = decimal % base
-        binary = charmap[remainder] + binary
+        result = charmap[remainder] + result
         decimal = decimal // base
-    return binary
+    return result
 
 def main():
     base = getnum("enter an output base: ")
