@@ -57,23 +57,23 @@ class Boid:
         dx = self.position[0] - boid.position[0]
         dy = self.position[1] - boid.position[1]
         
-        self.velocity.x += dx / 100
-        self.velocity.y += dy / 100
+        self.velocity.x += dx / 70
+        self.velocity.y += dy / 70
         
     def cohesion(self, boid) -> None:
         dx = self.position[0] - boid.position[0]
         dy = self.position[1] - boid.position[1]
         
-        self.velocity.x -= dx / 5000
-        self.velocity.y -= dy / 5000
+        self.velocity.x -= dx / 4000
+        self.velocity.y -= dy / 4000
         
     def alignment(self, neighbours) -> None:
         if len(neighbours) == 0: return
         mean_vx = sum([b.velocity.x for b in neighbours]) / len(neighbours)
         mean_vy = sum([b.velocity.y for b in neighbours]) / len(neighbours)
         
-        self.velocity.x += mean_vx / 15
-        self.velocity.y += mean_vy / 15
+        self.velocity.x += mean_vx / 25
+        self.velocity.y += mean_vy / 25
         
     def wrap_around_edges(self):
         screen = turtle.Screen()
@@ -98,9 +98,11 @@ class Boid:
     def simulate(self):
         for n in self.boids:
             if n is not self:
-                if self.distance(n) < 50:
+                distance = self.distance(n)
+                if distance < 30:
                     self.separation(n)
-                self.cohesion(n)
+                if distance < 150:
+                    self.cohesion(n)
 
         close_neighbours = [b for b in self.boids if b is not self and self.distance(b) < 100]
         self.alignment(close_neighbours)
@@ -122,7 +124,7 @@ if __name__ == "__main__":
     turtle.tracer(0)
     
     boids = []
-    for i in range(200):
+    for i in range(150):
         boids.append(Boid(boids))
         
     while True:

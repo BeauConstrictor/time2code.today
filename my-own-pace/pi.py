@@ -2,11 +2,12 @@ from math import pi, factorial, sqrt
 from typing import Iterator, Any
 from decimal import getcontext, Decimal
 import time
+import sys
 
-DIGITS = 77_994
+DEFAULT_DIGITS = 77_994
 
 decimal = getcontext()
-decimal.prec = DIGITS
+decimal.prec = DEFAULT_DIGITS
 
 C = 426880 * Decimal(10005).sqrt()
 
@@ -69,6 +70,12 @@ def every_nth(generator: Iterator[Any], n: int) -> Iterator[Any]:
 def main() -> None: 
     with open(".reference-pi.txt", "r") as f:
         pi_str = f.read()
+
+    try:
+        if len(sys.argv) >= 2:
+            decimal.prec = int(sys.argv[1])
+    except ValueError:
+        print(f"pi.py: {sys.argv[1]}: cannot be interpreted as a digit count")
 
     for approx_pi in every_nth(chudnovsky(), 10):
         output, correct_digits = ansii_verify_approx(str(approx_pi), pi_str, 10)
