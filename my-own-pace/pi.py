@@ -65,13 +65,32 @@ def every_nth(generator: Iterator[Any], n: int) -> Iterator[Any]:
     for i, val in enumerate(generator, 1):
         if i % n == 0:
             yield val
-        
-with open(".reference-pi.txt", "r") as f:
-    pi_str = f.read()
+      
+def main() -> None: 
+    with open(".reference-pi.txt", "r") as f:
+        pi_str = f.read()
 
-for approx_pi in every_nth(chudnovsky(), 10):
-    output, correct_digits = ansii_verify_approx(str(approx_pi), pi_str, 10)
+    for approx_pi in every_nth(chudnovsky(), 10):
+        output, correct_digits = ansii_verify_approx(str(approx_pi), pi_str, 10)
+        
+        print("\033[2J")
+        print(f"Correct Digits: {correct_digits}")
+        print(output)
     
-    print("\033[2J")
-    print(f"Correct Digits: {correct_digits}")
-    print(output)
+def watch_convergence() -> None:
+    digit_idx = 2003
+    
+    with open(".reference-pi.txt", "r") as f:
+        pi_str = f.read()
+        
+    for approx_pi in chudnovsky():
+        digits = str(approx_pi)
+        _, correct_digits = ansii_verify_approx(digits, pi_str, 10)
+        
+        if correct_digits > digit_idx + 100: break
+        
+        digit = digits[digit_idx]
+        print(digit)
+    
+if __name__ == "__main__":
+    main()
