@@ -1,5 +1,13 @@
+from typing import Iterator
 from tkinter import Canvas
 import turtle
+
+def getnum(prompt: str) -> int:
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("enter a valid number!")
 
 def int_to_col(n: int) -> str:
     if n == -1:
@@ -10,7 +18,7 @@ def int_to_col(n: int) -> str:
 def scale(value, pixel_max, target_min, target_max):
     return target_min + (value / pixel_max) * (target_max - target_min)
 
-def mandelbrot_colour(x: float, y: float) -> int:
+def mandelbrot_sample(x: float, y: float) -> int:
     zx = 0
     zy = 0
 
@@ -24,22 +32,13 @@ def mandelbrot_colour(x: float, y: float) -> int:
     
     return -1
 
-def mandelbrot() -> list[list[int]]:
-    mandelbrot_set = []
-
-    WIDTH = 1000
-    HEIGHT = 1000
-
-    for py in range(HEIGHT):
-        row = []
-        for px in range(WIDTH):
-            x = scale(px, WIDTH, -2.0, 1.0)
-            y = scale(py, HEIGHT, -1.5, 1.5)
-            row.append(mandelbrot_colour(x, y))
-        mandelbrot_set.append(row)
-
-
-    return mandelbrot_set
+def mandelbrot(width: int, height: int) -> Iterator[int|None]:
+    for py in range(height):
+        for px in range(width):
+            x = scale(px, width, -2.0, 1.0)
+            y = scale(py, height, -1.5, 1.5)
+            yield mandelbrot_sample(x, y)
+        yield None
 
 def init_turtle() -> Canvas:
     turtle.hideturtle()
@@ -56,13 +55,20 @@ def draw_pixel(canvas, x: int, y: int, color: str) -> None:
 def main() -> None:
     canvas = init_turtle()
 
-    mandelbrot_set = mandelbrot()
+    size = getnum("what resolution should the image be drawn at (recommended: 1000)? ")
+    offset = size // 2
 
-    center_offset = len(mandelbrot_set) // 2
+    x = 0
+    y = 0
+    for sample in mandelbrot(size, size):
+        if sample == None:
+            x = 0
+            y += 1
+            if y % 10 == 0: canvas.update()
+            continue
 
-    for y, row in enumerate(mandelbrot_set):
-        for x, i in enumerate(row):
-            draw_pixel(canvas, x-center_offset, y-center_offset, int_to_col(i))
+        draw_pixel(canvas, x-offset, y-offset, int_to_col(sample))
+        x += 1
 
     turtle.done()
 
