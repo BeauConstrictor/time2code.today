@@ -5,11 +5,13 @@ import argparse
 import sys
 
 import const_pi
+import const_e
 
 simple_output = False
 
 modules = {
-    "pi": const_pi
+    "pi": const_pi,
+    "e": const_e,
 }
 
 def get_reference(constant: str) -> str:
