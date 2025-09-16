@@ -6,7 +6,7 @@ import sys
 decimal = getcontext()
 
 def leibniz(digits: int) -> Iterator[Decimal]:
-    decimal.prec = digits + 10
+    decimal.prec = digits + 100
 
     is_add = True
     running_value = Decimal(0)
@@ -24,7 +24,7 @@ def leibniz(digits: int) -> Iterator[Decimal]:
         iteration += Decimal(1)
         
 def chudnovsky(digits: int) -> Iterator[Decimal]:
-    decimal.prec = digits + 10
+    decimal.prec = digits + 100
     C = 426880 * Decimal(10005).sqrt()
 
     k = 0
@@ -43,4 +43,9 @@ def chudnovsky(digits: int) -> Iterator[Decimal]:
 algorithms = {
     "leibniz": leibniz,
     "chudnovsky": chudnovsky,
+}
+
+gui_batch_sizes = {
+    "leibniz": 2000,
+    "chudnovsky": 1,
 }

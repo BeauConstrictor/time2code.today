@@ -2,6 +2,8 @@ from decimal import Decimal, getcontext
 from typing import Iterator
 from math import factorial
 
+# e is still a work in progress, and is very slow and unreliable.
+
 decimal = getcontext()
 
 def taylor_series(digits: int):
@@ -52,4 +54,10 @@ algorithms = {
     "limit": compound_limit,
     "fraction": continued_fraction,
     "taylor": taylor_series,
+}
+
+gui_batch_sizes = {
+    "limit": 2000,
+    "fraction": 20,
+    "taylor": 5
 }

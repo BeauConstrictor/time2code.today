@@ -135,6 +135,12 @@ def main() -> None:
         print("\n".join(modules.keys()))
         exit(0)
 
+    if args.constant == "gui":
+        import gui
+        app = gui.App()
+        app.mainloop()
+        exit(0)
+
     if not verify_args(args): exit(1)
 
     module = modules[args.constant]
