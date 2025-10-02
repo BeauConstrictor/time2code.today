@@ -1,7 +1,8 @@
 import random
 
-# i haven't used type annotations for this one, because they get to cumbersome
-# with the varying types that can be taken and returned during recursion.
+# i haven't used type annotations for this one, because they get too
+# cumbersome with the varying types that can be taken and returned
+# during recursion.
 
 def radixsort(lst, digit_idx=0):
     if len(lst) <= 1:
