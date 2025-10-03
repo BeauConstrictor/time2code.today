@@ -4,6 +4,8 @@ from enum import Enum
 
 SIZE = 20
 FRAMERATE = 10
+APPLE_COUNT = 2
+DEMO_MODE = False
 
 interval = 1000 // FRAMERATE
 
@@ -26,24 +28,24 @@ class Snake:
         self.score = 0
         
         self.apples = []
-        self.add_apple()
+        for i in range(APPLE_COUNT): self.add_apple()
         
         self.turtle = turtle.Turtle()
         self.turtle.shape("square")
         self.turtle.hideturtle()
-        self.turtle.penup()
+        if not DEMO_MODE: self.turtle.penup()
         
         self.score_counter = turtle.Turtle()
         self.score_counter.color("white")
         self.score_counter.hideturtle()
-        self.score_counter.penup()
+        if not DEMO_MODE: self.score_counter.penup()
         self.score_counter.goto(0, -SIZE*10 - 80)
         
     def add_apple(self) -> None:
         while True:
             pos = (random.randint(0, SIZE-1), random.randint(0, SIZE-1))
             if pos not in self.positions: break
-        self.apples = [pos]
+        self.apples.append(pos)
         
     def draw_score(self) -> None:
         self.score_counter.clear()
@@ -79,30 +81,32 @@ class Snake:
         if not self.eaten_apple: self.positions.pop(0)
         self.eaten_apple = False
         
+    def goto_cell(self, col: int, row: int) -> None:
+        offset = SIZE * 10
+        self.turtle.goto(col * 20 - offset, row * 20 - offset)
+        
     def draw(self) -> None:
         self.turtle.clear()
-        
-        offset = SIZE * 10
         
         for row in range(SIZE):
             for col in range(SIZE):
                 if (col, row) in self.apples:
                     self.turtle.color("red")
-                    self.turtle.goto(col * 20 - offset, row * 20 - offset)
+                    self.goto_cell(col, row)
                     self.turtle.stamp()
                 if (col, row) in self.positions:
                     t = self.positions.index((col, row)) / len(self.positions)
                     a = (0, 1, 0)
                     b = (0, 0.5, 0)
                     self.turtle.color(lerp_color(a, b, t))
-                    self.turtle.goto(col * 20 - offset, row * 20 - offset)
+                    self.goto_cell(col, row)
                     self.turtle.stamp()
                     
         self.draw_score()
 
 def init_turtle() -> None:
     turtle.bgcolor("black")
-    turtle.tracer(0)
+    if not DEMO_MODE: turtle.tracer(0)
     turtle.update()
     
     bg = turtle.Turtle()
