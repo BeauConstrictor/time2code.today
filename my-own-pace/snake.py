@@ -88,19 +88,18 @@ class Snake:
     def draw(self) -> None:
         self.turtle.clear()
         
-        for row in range(SIZE):
-            for col in range(SIZE):
-                if (col, row) in self.apples:
-                    self.turtle.color("red")
-                    self.goto_cell(col, row)
-                    self.turtle.stamp()
-                if (col, row) in self.positions:
-                    t = self.positions.index((col, row)) / len(self.positions)
-                    a = (0, 1, 0)
-                    b = (0, 0.5, 0)
-                    self.turtle.color(lerp_color(a, b, t))
-                    self.goto_cell(col, row)
-                    self.turtle.stamp()
+        for i, pos in enumerate(self.positions):
+            t = i / len(self.positions)
+            a = (0, 1, 0)
+            b = (0, 0.5, 0)
+            self.turtle.color(lerp_color(a, b, t))
+            self.goto_cell(pos[0], pos[1])
+            self.turtle.stamp()
+    
+        self.turtle.color("red")
+        for a in self.apples:
+            self.goto_cell(a[0], a[1])
+            self.turtle.stamp()
                     
         self.draw_score()
 
