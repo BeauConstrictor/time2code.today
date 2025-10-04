@@ -27,7 +27,8 @@ class Snake:
         self.restart()
         
         self.turtle = turtle.Turtle()
-        self.turtle.shape("square")
+        self.turtle.pensize(15)
+        self.turtle.shapesize(0.75)
         self.turtle.hideturtle()
         if not DEMO_MODE: self.turtle.penup()
         
@@ -38,7 +39,7 @@ class Snake:
         self.score_counter.goto(0, -SIZE*10 - 80)
         
     def restart(self) -> None:
-        self.positions = [(i, 0) for i in range(5)]
+        self.positions = [(i, 0) for i in range(9)]
         self.direction = Direction.RIGHT
         self.eaten_apple = False
         
@@ -105,8 +106,10 @@ class Snake:
         offset = SIZE * 10
         self.turtle.goto(col * 20 - offset, row * 20 - offset)
         
-    def draw(self) -> None:
-        self.turtle.clear()
+    def draw_snake(self) -> None:
+        first_pos = self.positions[0]
+        self.goto_cell(first_pos[0], first_pos[1])
+        self.turtle.pendown()
         
         for i, pos in enumerate(self.positions):
             t = i / len(self.positions)
@@ -114,13 +117,21 @@ class Snake:
             b = (0, 0.5, 0)
             self.turtle.color(lerp_color(a, b, t))
             self.goto_cell(pos[0], pos[1])
-            self.turtle.stamp()
-    
+            
+        self.turtle.penup()
+            
+    def draw_apples(self) -> None:
         self.turtle.color("red")
+        self.turtle.shape("circle")
         for a in self.apples:
             self.goto_cell(a[0], a[1])
             self.turtle.stamp()
-                    
+        
+    def draw(self) -> None:
+        self.turtle.clear()
+        
+        self.draw_snake()
+        self.draw_apples()
         self.draw_score()
 
 def init_turtle() -> None:
