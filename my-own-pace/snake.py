@@ -1,11 +1,15 @@
+from tkinter import messagebox
+from enum import Enum
 import turtle
 import random
-from enum import Enum
+import os
 
 SIZE = 20
 FRAMERATE = 10
 APPLE_COUNT = 2
 DEMO_MODE = False
+
+HIGHSCORE_PATH = os.path.join(os.path.dirname(__file__), '.snake-highscore.txt')
 
 interval = 1000 // FRAMERATE
 
@@ -20,15 +24,7 @@ def lerp_color(c1: tuple[float, float, float], c2: tuple[float, float, float], t
 
 class Snake:
     def __init__(self) -> None:
-        self.positions = [(i, 0) for i in range(5)]
-        self.direction = Direction.RIGHT
-        self.eaten_apple = False
-        
-        self.game_over = False
-        self.score = 0
-        
-        self.apples = []
-        for i in range(APPLE_COUNT): self.add_apple()
+        self.restart()
         
         self.turtle = turtle.Turtle()
         self.turtle.shape("square")
@@ -40,6 +36,19 @@ class Snake:
         self.score_counter.hideturtle()
         if not DEMO_MODE: self.score_counter.penup()
         self.score_counter.goto(0, -SIZE*10 - 80)
+        
+    def restart(self) -> None:
+        self.positions = [(i, 0) for i in range(5)]
+        self.direction = Direction.RIGHT
+        self.eaten_apple = False
+        
+        self.fetch_highscore()
+        
+        self.game_over = False
+        self.score = 0
+        
+        self.apples = []
+        for i in range(APPLE_COUNT): self.add_apple()
         
     def add_apple(self) -> None:
         while True:
@@ -53,6 +62,14 @@ class Snake:
                                  align="center",
                                  font=("Arial", 32, "bold"))
                                  
+    def fetch_highscore(self) -> None:
+        with open(HIGHSCORE_PATH, "r") as f:
+            self.highscore = int(f.read())
+    
+    def set_highscore(self) -> None:
+        with open(HIGHSCORE_PATH, "w") as f:
+            f.write(str(self.score))
+                                 
     def trigger_game_over(self) -> None:
         self.score_counter.clear()
         self.score_counter.color("red")
@@ -60,6 +77,9 @@ class Snake:
                                  align="center",
                                  font=("Arial", 32, "bold"))
         self.game_over = True
+        
+        if self.score > self.highscore:
+            self.set_highscore()
         
     def move(self) -> None:
         old_pos = self.positions[-1]
@@ -119,15 +139,12 @@ def init_turtle() -> None:
 def go_up(snake: Snake) -> None:
     if snake.direction != Direction.DOWN:
         snake.direction = Direction.UP
-
 def go_down(snake: Snake) -> None:
     if snake.direction != Direction.UP:
         snake.direction = Direction.DOWN
-
 def go_left(snake: Snake) -> None:
     if snake.direction != Direction.RIGHT:
         snake.direction = Direction.LEFT
-
 def go_right(snake: Snake) -> None:
     if snake.direction != Direction.LEFT:
         snake.direction = Direction.RIGHT
@@ -135,7 +152,17 @@ def go_right(snake: Snake) -> None:
 def update(snake: Snake) -> None:
         snake.move()
         if snake.game_over:
-            turtle.done()
+            message = f"Score: {snake.score}"
+            if snake.score > snake.highscore:
+                message += "\nNew highscore!"
+            else:
+                message += f"\nHighscore: {snake.highscore}"
+            message += "\nPlay again?"
+            yn = messagebox.askyesno("Game Over!",
+                                     message)
+            if not yn: return exit(0)
+            
+            snake.restart()
         snake.draw()
         turtle.update()
         
