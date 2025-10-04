@@ -28,14 +28,12 @@ class Snake:
         
         self.turtle = turtle.Turtle()
         self.turtle.pensize(15)
-        self.turtle.shapesize(0.75)
+        self.turtle.shapesize(15 / 20)
         self.turtle.hideturtle()
-        if not DEMO_MODE: self.turtle.penup()
         
         self.score_counter = turtle.Turtle()
         self.score_counter.color("white")
         self.score_counter.hideturtle()
-        if not DEMO_MODE: self.score_counter.penup()
         self.score_counter.goto(0, -SIZE*10 - 80)
         
     def restart(self) -> None:
