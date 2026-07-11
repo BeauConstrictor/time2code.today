@@ -1,32 +1,20 @@
-import random
 
-# i haven't used type annotations for this one, because they get too
-# cumbersome with the varying types that can be taken and returned
-# during recursion.
+def sort(l: list[int]) -> list[int]:
+    max_bit_width = max([n.bit_length() for n in l]) + 1
 
-def radixsort(lst, digit_idx=0):
-    if len(lst) <= 1:
-        return lst
+    for i in range(max_bit_width):
+        all_1s = []
+        all_0s = []
 
-    max_len = max(len(str(n)) for n in lst)
-    padded = [str(n).zfill(max_len) for n in lst]
+        for n in l:
+            bit = n & (1 << i)
 
-    if digit_idx >= max_len:
-        return [int(n) for n in padded]
+            if bit == 0: all_0s.append(n)
+            else:        all_1s.append(n)
 
-    buckets = [[] for i in range(10)]
-    for i in padded:
-        buckets[int(i[digit_idx])].append(i)
+        l = all_0s + all_1s
 
-    result = []
-    for b in buckets:
-        if b:
-            result.extend(radixsort([int(n) for n in b], digit_idx + 1))
-
-    return result
+    return l
 
 if __name__ == "__main__":
-    import random
-    l = [random.randint(10, 99) for _ in range(10)]
-    print("Original list:", l)
-    print("Sorted list:  ", radixsort(l))
+    print(sort([2, 5, 1, 32, 7, 4, 1, 7, 2, 213, 5, 45]))

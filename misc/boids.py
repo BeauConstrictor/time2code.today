@@ -64,8 +64,8 @@ class Boid:
         dx = self.position[0] - boid.position[0]
         dy = self.position[1] - boid.position[1]
         
-        self.velocity.x -= dx / 4000
-        self.velocity.y -= dy / 4000
+        self.velocity.x -= dx / 1000
+        self.velocity.y -= dy / 1000
         
     def alignment(self, neighbours) -> None:
         if len(neighbours) == 0: return

@@ -106,6 +106,7 @@ class Ball(PhysicsObject):
         self.turtle.shapesize(self.mass / 20)
         self.turtle.pensize(4)
         self.turtle.penup()
+        self.turtle.hideturtle()
         
         self.turtle.color(*[random.random() for i in range(3)])
         
